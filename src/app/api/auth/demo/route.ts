@@ -7,10 +7,14 @@ export async function POST() {
     let user = await db.user.findFirst()
 
     if (!user) {
-      return NextResponse.json(
-        { message: 'Demo Mode requires at least one user in the database.' },
-        { status: 500 }
-      )
+      // If DB is completely empty, create a dummy Demo User so it doesn't crash
+      user = await db.user.create({
+        data: {
+          name: 'Demo User',
+          email: 'demo@example.com',
+          password: 'demo-mode-bypass', // Not used since JWT & password check is bypassed
+        }
+      })
     }
 
     // Completely bypass JWT for demo login

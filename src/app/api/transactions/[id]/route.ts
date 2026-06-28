@@ -30,6 +30,10 @@ export async function PUT(
   const { user } = auth
   const { id } = await params
 
+  if (process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+    return NextResponse.json({ message: 'Action disabled in Demo Mode' }, { status: 403 })
+  }
+
   try {
     const body = await req.json()
     const result = validate(updateTransactionSchema, body)
@@ -71,6 +75,10 @@ export async function DELETE(
   if ('error' in auth) return auth.error
   const { user } = auth
   const { id } = await params
+
+  if (process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+    return NextResponse.json({ message: 'Action disabled in Demo Mode' }, { status: 403 })
+  }
 
   const existing = await db.transaction.findFirst({
     where: { id, userId: user.id },

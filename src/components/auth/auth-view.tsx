@@ -35,6 +35,20 @@ export function AuthView() {
 
   const [loginLoading, setLoginLoading] = useState(false)
   const [registerLoading, setRegisterLoading] = useState(false)
+  const [demoLoading, setDemoLoading] = useState(false)
+
+  async function onDemoLogin() {
+    setDemoLoading(true)
+    try {
+      const { user } = await authApi.demoLogin()
+      setUser(user)
+      toast.success(`Welcome to Demo Mode, ${user.name.split(' ')[0]}!`)
+    } catch (err: any) {
+      toast.error(err.message || 'Demo Login failed')
+    } finally {
+      setDemoLoading(false)
+    }
+  }
 
   async function onLogin(values: LoginValues) {
     setLoginLoading(true)
@@ -152,9 +166,27 @@ export function AuthView() {
                         </p>
                       )}
                     </div>
-                    <Button type="submit" className="w-full" disabled={loginLoading}>
+                    <Button type="submit" className="w-full" disabled={loginLoading || demoLoading}>
                       {loginLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Sign In
+                    </Button>
+                    <div className="relative my-4">
+                      <div className="absolute inset-0 flex items-center">
+                        <span className="w-full border-t border-border" />
+                      </div>
+                      <div className="relative flex justify-center text-xs uppercase">
+                        <span className="bg-background px-2 text-muted-foreground">Or</span>
+                      </div>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      disabled={loginLoading || demoLoading}
+                      onClick={onDemoLogin}
+                    >
+                      {demoLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Demo Login
                     </Button>
                   </form>
                 </CardContent>

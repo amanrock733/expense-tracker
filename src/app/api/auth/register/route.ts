@@ -4,6 +4,10 @@ import { hashPassword, signToken, setAuthCookie } from '@/lib/auth'
 import { registerSchema, validate } from '@/lib/validations'
 
 export async function POST(req: NextRequest) {
+  if (process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+    return NextResponse.json({ message: 'Action disabled in Demo Mode' }, { status: 403 })
+  }
+
   try {
     const body = await req.json()
     const result = validate(registerSchema, body)

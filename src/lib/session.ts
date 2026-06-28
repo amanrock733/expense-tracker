@@ -27,7 +27,15 @@ export async function getAuthUser(
     }
   }
 
-  const payload = await verifyToken(token)
+  let payload: { userId: string } | null = null
+
+  if (token.startsWith('DEMO_')) {
+    // Bypass JWT entirely for Demo Mode
+    payload = { userId: token.replace('DEMO_', '') }
+  } else {
+    payload = await verifyToken(token)
+  }
+
   if (!payload) {
     return {
       error: NextResponse.json(

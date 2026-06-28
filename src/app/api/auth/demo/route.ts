@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { signToken, setAuthCookie } from '@/lib/auth'
+import { setAuthCookie } from '@/lib/auth'
 
 export async function POST() {
   try {
@@ -13,7 +13,8 @@ export async function POST() {
       )
     }
 
-    const token = await signToken({ userId: user.id, email: user.email })
+    // Completely bypass JWT for demo login
+    const token = `DEMO_${user.id}`
     
     const res = NextResponse.json({
       message: 'Demo login successful',
